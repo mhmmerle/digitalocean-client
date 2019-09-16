@@ -1,4 +1,4 @@
-package com.adcubum.appconfig
+package email.haemmerle.appconfig
 
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter

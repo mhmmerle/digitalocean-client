@@ -1,11 +1,10 @@
-package com.adcubum.template
+package email.haemmerle.digitalocean.client.template
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
-
 
 fun main(args: Array<String>) = CLI()
         .subcommands(Publish())
@@ -22,6 +21,6 @@ class Publish : CliktCommand(help = "Publish and download a document") {
 
 
     override fun run() {
-        // What to do when this sucommand is run
+        // What to do when this subcommand is run
     }
 }

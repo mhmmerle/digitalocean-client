@@ -1,4 +1,4 @@
-package com.adcubum.appconfig
+package email.haemmerle.appconfig
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
@@ -71,7 +71,7 @@ class AppConfigTest {
         data class NestedConfigClass(val property: String)
         data class ConfigClass(val nested: NestedConfigClass)
 
-        val appConfig  = AppConfig().withSource(TestConfigSource(mapOf("nested.property" to "value" )))
+        val appConfig  = AppConfig().withSource(TestConfigSource(mapOf("nested.property" to "value")))
 
         //when
         val result : ConfigClass = appConfig.get()
@@ -86,8 +86,8 @@ class AppConfigTest {
         data class ConfigClass(val property: String)
 
         val appConfig  = AppConfig()
-                .withSource(TestConfigSource(mapOf("property" to "value" )))
-                .withSource(TestConfigSource(mapOf("property" to "fallback" )))
+                .withSource(TestConfigSource(mapOf("property" to "value")))
+                .withSource(TestConfigSource(mapOf("property" to "fallback")))
 
         //when
         val result : ConfigClass = appConfig.get()
@@ -103,7 +103,7 @@ class AppConfigTest {
 
         val appConfig  = AppConfig()
                 .withSource(TestConfigSource(mapOf()))
-                .withSource(TestConfigSource(mapOf("property" to "fallback" )))
+                .withSource(TestConfigSource(mapOf("property" to "fallback")))
 
         //when
         val result : ConfigClass = appConfig.get()

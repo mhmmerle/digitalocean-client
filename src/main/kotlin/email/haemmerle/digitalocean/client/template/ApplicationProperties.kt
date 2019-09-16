@@ -1,7 +1,7 @@
-package com.adcubum.template
+package email.haemmerle.digitalocean.client.template
 
-import com.adcubum.appconfig.AppConfig
-import com.adcubum.httpclient.ServerProperties
+import email.haemmerle.appconfig.AppConfig
+import email.haemmerle.digitalocean.client.httpclient.ServerProperties
 
 data class ApplicationProperties (val server: ServerProperties)
 

@@ -1,15 +1,14 @@
-package com.adcubum.httpclient;
+package email.haemmerle.digitalocean.client.httpclient
 
-import com.adcubum.template.*
 import com.beust.klaxon.Klaxon
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.fuel.httpPost
 import com.github.kittinunf.result.Result
+import email.haemmerle.digitalocean.client.template.appProperties
 import org.apache.logging.log4j.LogManager
 import java.nio.charset.StandardCharsets
-
 
 class JsonHttpClient (val hostBaseUrl : String, val username : String, val password : String) {
 
@@ -53,7 +52,7 @@ class JsonHttpClient (val hostBaseUrl : String, val username : String, val passw
             throw UnexpectedServerError("Check Server ($hostBaseUrl) log for further information.")
         }
         if (result is Result.Failure) {
-            if (response.headers[Headers.CONTENT_TYPE]?.get(0)?.replace(" ", "") == CONTENTTYPE_JSON_UTF8) {
+            if (response.header(Headers.CONTENT_TYPE).first().replace(" ", "") == CONTENTTYPE_JSON_UTF8) {
                 val ResponseObject = Klaxon().parse<ResponseObject>(response.data.toString(StandardCharsets.UTF_8))
                 throw HttpRequestFailed("Request to ${response.url} responds: ${ResponseObject?.errorText().orEmpty()}")
             } else {
@@ -63,9 +62,9 @@ class JsonHttpClient (val hostBaseUrl : String, val username : String, val passw
     }
 
     private fun extractCookie(response: Response): String {
-        val cookies = response.headers[Headers.SET_COOKIE]?.map { cookie ->
+        val cookies = response.headers[Headers.SET_COOKIE].map { cookie ->
             cookieRegex.matchEntire(cookie)!!.destructured
-        } ?: throw LoginFailed();
+        }
         return cookies.map { (name, value) -> "$name=\"$value\"" }.joinToString(separator = ";")
     }
 

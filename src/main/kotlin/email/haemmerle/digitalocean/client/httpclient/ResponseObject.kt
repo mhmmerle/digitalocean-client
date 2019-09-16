@@ -1,4 +1,4 @@
-package com.adcubum.httpclient
+package email.haemmerle.digitalocean.client.httpclient
 
 data class ResponseObject(val success: Boolean, val code: Number = 0, val error: String = "", val errors: Error = Error("", "")) {
     data class Error(val reasonKey: String, val reason: String)

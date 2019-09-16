@@ -1,27 +1,15 @@
-import org.apache.tools.ant.taskdefs.Tar
-
 buildscript {
-    val mavenResolveUrl: String by project
     val junitPlatformVersion: String by project
-    val toolVersioningPluginVersion: String by project
 
     repositories {
         mavenLocal()
-        maven(mavenResolveUrl)
+        mavenCentral()
     }
 
     dependencies {
         classpath("org.junit.platform:junit-platform-gradle-plugin:$junitPlatformVersion")
-        classpath("com.adcubum.tool:versioning-plugin:$toolVersioningPluginVersion")
     }
 }
-
-val mavenResolveUrl: String by project
-val mavenReleasePublishUrl: String by project
-val mavenSnapshotPublishUrl: String by project
-
-val artifactrepoUsername: String? by project
-val artifactrepoPassword: String? by project
 
 val kotlinVersion: String by project
 val junitVersion: String by project
@@ -33,69 +21,36 @@ val cliktVersion: String by project
 
 repositories {
     mavenLocal()
-    maven(mavenResolveUrl)
+    mavenCentral()
+    jcenter()
 }
 
 plugins {
     kotlin("jvm") version "1.3.11"
     application
-    `maven-publish`
 }
 
 pluginManager.apply("org.junit.platform.gradle.plugin")
-pluginManager.apply("com.adcubum.tool.versioning-plugin")
 
-group = "com.adcubum.template"
+group = "email.haemmerle.digitalocean.client"
 
 application {
-    mainClassName = "com.adcubum.template.MainKt"
+    mainClassName = "email.haemmerle.digitalocean.client.MainKt"
 }
 
 dependencies {
-    compile(kotlin("stdlib-jdk8"))
-    compile("com.github.kittinunf.fuel:fuel:$fuelVersion")
-    compile("com.beust:klaxon:$klaxonVersion")
-    compile("org.apache.logging.log4j:log4j-api:$log4JVersion")
-    compile("org.apache.logging.log4j:log4j-core:$log4JVersion")
-    compile("com.github.ajalt:clikt:$cliktVersion")
+    implementation(kotlin("stdlib-jdk8"))
+    implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
+    implementation("com.beust:klaxon:$klaxonVersion")
+    implementation("org.apache.logging.log4j:log4j-api:$log4JVersion")
+    implementation("org.apache.logging.log4j:log4j-core:$log4JVersion")
+    implementation("com.github.ajalt:clikt:$cliktVersion")
 
-    implementation( "org.jetbrains.kotlin:kotlin-reflect:1.3.11")
+    implementation( "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
     testImplementation("org.assertj:assertj-core:$assertJVersion")
 
     testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
-}
-
-publishing {
-    repositories.maven{
-        credentials.username = artifactrepoUsername?:""
-        credentials.password = artifactrepoPassword?:""
-    }
-
-    publications {
-        create<MavenPublication>("applicationTar") {
-            from(components["java"])
-            artifact(tasks["distTar"])
-        }
-        create<MavenPublication>("applicationZip") {
-            from(components["java"])
-            artifact(tasks["distZip"])
-        }
-    }
-}
-
-gradle.taskGraph.whenReady {
-    val mavenRepoUri = if (taskGraphContains("release", "candidate", "devSnapshot")) {
-        uri(mavenReleasePublishUrl)
-    } else {
-        uri(mavenSnapshotPublishUrl)
-    }
-    println("Publishing to maven repository $mavenRepoUri")
-    (publishing.repositories.get("maven") as MavenArtifactRepository).url = mavenRepoUri
-}
-
-fun taskGraphContains (vararg taskNames : String) : Boolean {
-    return gradle.taskGraph.allTasks.any { taskNames.contains(it.name) }
 }
