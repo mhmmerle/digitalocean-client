@@ -1,7 +1,7 @@
-package email.haemmerle.digitalocean.client.template
+package email.haemmerle.digitalocean.client
 
 import email.haemmerle.appconfig.AppConfig
-import email.haemmerle.digitalocean.client.httpclient.ServerProperties
+import email.haemmerle.httpclient.ServerProperties
 
 data class ApplicationProperties (val server: ServerProperties)
 

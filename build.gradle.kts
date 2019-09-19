@@ -51,6 +51,9 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
     testImplementation("org.assertj:assertj-core:$assertJVersion")
+    testImplementation("io.mockk:mockk:1.9")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.2.0")
 
     testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+
 }

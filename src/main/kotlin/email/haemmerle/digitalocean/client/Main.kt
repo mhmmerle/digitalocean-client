@@ -1,4 +1,4 @@
-package email.haemmerle.digitalocean.client.template
+package email.haemmerle.digitalocean.client
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.subcommands
