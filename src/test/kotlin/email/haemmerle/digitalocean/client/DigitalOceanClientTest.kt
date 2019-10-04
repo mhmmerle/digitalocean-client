@@ -1,7 +1,7 @@
 package email.haemmerle.digitalocean.client
 
-import email.haemmerle.httpclient.BearerAuthorization
-import email.haemmerle.httpclient.JsonHttpClient
+import email.haemmerle.restclient.BearerAuthorization
+import email.haemmerle.restclient.JsonHttpClient
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat

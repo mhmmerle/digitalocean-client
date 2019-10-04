@@ -1,3 +1,3 @@
-package email.haemmerle.httpclient
+package email.haemmerle.digitalocean.client
 
 data class ServerProperties (val url: String)

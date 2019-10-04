@@ -11,14 +11,6 @@ buildscript {
     }
 }
 
-val kotlinVersion: String by project
-val junitVersion: String by project
-val assertJVersion: String by project
-val fuelVersion: String by project
-val klaxonVersion: String by project
-val log4JVersion: String by project
-val cliktVersion: String by project
-
 repositories {
     mavenLocal()
     mavenCentral()
@@ -40,20 +32,19 @@ application {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
-    implementation("com.beust:klaxon:$klaxonVersion")
-    implementation("org.apache.logging.log4j:log4j-api:$log4JVersion")
-    implementation("org.apache.logging.log4j:log4j-core:$log4JVersion")
-    implementation("com.github.ajalt:clikt:$cliktVersion")
+    implementation("org.apache.logging.log4j:log4j-api:2.11.1")
+    implementation("org.apache.logging.log4j:log4j-core:2.11.1")
+    implementation("com.beust:klaxon:5.0.13")
+    implementation("com.github.ajalt:clikt:1.5.0")
+    implementation( "org.jetbrains.kotlin:kotlin-reflect:1.3.40")
+    implementation("email.haemmerle.restclient:lib-rest-client:0.0.1")
 
-    implementation( "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
-    testImplementation("org.assertj:assertj-core:$assertJVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.0.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.0.0")
+    testImplementation("org.assertj:assertj-core:3.11.0")
     testImplementation("io.mockk:mockk:1.9")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.2.0")
 
-    testRuntime("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.0")
 
 }
