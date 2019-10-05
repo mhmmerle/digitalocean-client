@@ -5,7 +5,6 @@ import email.haemmerle.restclient.JsonHttpClient
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
 import org.junit.jupiter.api.Test
 
 internal class DigitalOceanClientTest {
@@ -46,6 +45,22 @@ internal class DigitalOceanClientTest {
         assertThat(result.sizes[1].name).isEqualTo("s-2vcpu-2gb")
         assertThat(result.versions.size).isEqualTo(3)
         assertThat(result.regions.size).isEqualTo(3)
+    }
+
+    @Test
+    fun canListEmptyClusters() {
+        // prepare
+        val jsonClientMock = mockk<JsonHttpClient>()
+        every { jsonClientMock.performJsonGetRequest("/v2/kubernetes/clusters") } returns """
+            {"kubernetes_clusters":[],"meta":{"total":0},"links":{}}
+            """.toByteArray()
+        val sut = DigitalOceanClient(jsonClientMock)
+
+        // when
+        val result = sut.getKubernetesClusters()
+
+        // then
+        assertThat(result.size).isEqualTo(0)
     }
 
     @Test
@@ -178,31 +193,49 @@ internal class DigitalOceanClientTest {
     }
 
     @Test
-    fun canListEmptyClusters() {
+    fun canCreateKubernetesCluster() {
         // prepare
         val jsonClientMock = mockk<JsonHttpClient>()
-        every { jsonClientMock.performJsonGetRequest("/v2/kubernetes/clusters") } returns """
-            {"kubernetes_clusters":[],"meta":{"total":0},"links":{}}
-            """.toByteArray()
         val sut = DigitalOceanClient(jsonClientMock)
+        val request = """{
+          "name": "prod-cluster-01",
+          "region": "nyc1",
+          "version": "1.14.1-do.4",
+          "tags": [
+            "production",
+            "web-team"
+          ],
+          "node_pools": [
+            {
+              "size": "s-1vcpu-2gb",
+              "count": 3,
+              "name": "frontend-pool",
+              "tags": [
+                "frontend"
+              ]
+            },
+            {
+              "size": "c-4",
+              "count": 2,
+              "name": "backend-pool"
+            }
+          ]
+        }"""
 
         // when
-        val result = sut.getKubernetesClusters()
+
 
         // then
-        assertThat(result.size).isEqualTo(0)
+
     }
 
     @Test
-    @Ignore
     fun getDigitalOceanResponse() {
         // prepare
-        val sut = JsonHttpClient(
-                "https://api.digitalocean.com",
-                BearerAuthorization("0f9d1898ab3740c2f4c4e284122e911ace79464dd56bebeb045baddf064f51f0"))
+        val sut = JsonHttpClient(appConfig.server.url, BearerAuthorization(appConfig.server.token))
 
         // when
-        val response = sut.performJsonGetRequest("/v2/kubernetes/clusters")
+        val response = sut.performJsonPostRequest("/v2/kubernetes/clusters")
 
         // then
         println(response.toString(Charsets.UTF_8))

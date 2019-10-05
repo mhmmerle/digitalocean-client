@@ -2,25 +2,47 @@ package email.haemmerle.digitalocean.client
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.subcommands
-import com.github.ajalt.clikt.parameters.arguments.argument
-import com.github.ajalt.clikt.parameters.options.multiple
 import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.prompt
 
-fun main(args: Array<String>) = CLI()
-        .subcommands(Publish())
-        .main(args)
+fun main(args: Array<String>) = DigitalOcean().subcommands(
+        Kubernetes().subcommands(
+                Options()
+        ),
+        Configure().subcommands(
+                Connection()
+        )).main(args)
 
-class CLI : CliktCommand(name = "application-name") {
+class DigitalOcean : CliktCommand(name = "do", help = "Use the Digital Ocean API from command line") {
     override fun run() = Unit
 }
 
-class Publish : CliktCommand(help = "Publish and download a document") {
+class Kubernetes : CliktCommand(help = "Manage Kubernetes clusters in Digital Ocean") {
+    override fun run() = Unit
+}
 
-    val argument by argument(help = "Application sample argument")
-    val option by option("-o", "--option", help = "Application sample option'").multiple()
+class Options : CliktCommand(help = "Show available options for Kubernetes clusters") {
+    override fun run() {
+        DigitalOceanClient(appConfig.server.url, appConfig.server.token).getKubernetesOptions()
+    }
+}
 
+class Configure : CliktCommand(help = "Configure settings") {
+    override fun run() = Unit
+}
+
+class Connection : CliktCommand(help = "Configure the connection to Digital Ocean API server") {
+
+    companion object {
+        const val URL_HELP = "Base url of the Digital Ocean API server"
+        const val TOKEN_HELP = "API token for authorization"
+    }
+
+    val url by option(help = URL_HELP).prompt(default = "https://api.digitalocean.com", text = URL_HELP)
+    val token by option(help = TOKEN_HELP).prompt(text = TOKEN_HELP)
 
     override fun run() {
-        // What to do when this subcommand is run
+        appConfigFile.updateConnectionConfig(url, token)
     }
+
 }

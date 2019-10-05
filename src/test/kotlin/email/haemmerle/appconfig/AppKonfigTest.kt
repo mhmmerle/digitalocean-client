@@ -4,14 +4,14 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-class AppConfigTest {
+class AppKonfigTest {
 
     @Test
     fun shouldReturnParameter() {
         //prepare
         data class ConfigClass(val property: String)
 
-        val appConfig  = AppConfig().withSource(
+        val appConfig = AppKonfig().withSource(
                 TestConfigSource(mapOf("property" to "value"))
         )
 
@@ -27,7 +27,7 @@ class AppConfigTest {
         //prepare
         data class ConfigClass(val property: String?)
 
-        val appConfig  = AppConfig().withSource(TestConfigSource()
+        val appConfig = AppKonfig().withSource(TestConfigSource()
         )
 
         //when
@@ -42,7 +42,7 @@ class AppConfigTest {
         //prepare
         data class ConfigClass(val property: String = "default")
 
-        val appConfig  = AppConfig().withSource(TestConfigSource())
+        val appConfig = AppKonfig().withSource(TestConfigSource())
 
         //when
         val result : ConfigClass = appConfig.get()
@@ -56,7 +56,7 @@ class AppConfigTest {
         //prepare
         data class ConfigClass(val property: String)
 
-        val appConfig  = AppConfig().withSource(TestConfigSource()
+        val appConfig = AppKonfig().withSource(TestConfigSource()
         )
 
         //when
@@ -71,7 +71,7 @@ class AppConfigTest {
         data class NestedConfigClass(val property: String)
         data class ConfigClass(val nested: NestedConfigClass)
 
-        val appConfig  = AppConfig().withSource(TestConfigSource(mapOf("nested.property" to "value")))
+        val appConfig = AppKonfig().withSource(TestConfigSource(mapOf("nested.property" to "value")))
 
         //when
         val result : ConfigClass = appConfig.get()
@@ -85,7 +85,7 @@ class AppConfigTest {
         //prepare
         data class ConfigClass(val property: String)
 
-        val appConfig  = AppConfig()
+        val appConfig = AppKonfig()
                 .withSource(TestConfigSource(mapOf("property" to "value")))
                 .withSource(TestConfigSource(mapOf("property" to "fallback")))
 
@@ -101,7 +101,7 @@ class AppConfigTest {
         //prepare
         data class ConfigClass(val property: String)
 
-        val appConfig  = AppConfig()
+        val appConfig = AppKonfig()
                 .withSource(TestConfigSource(mapOf()))
                 .withSource(TestConfigSource(mapOf("property" to "fallback")))
 

@@ -1,5 +1,7 @@
 package email.haemmerle.httpclient
 
+import email.haemmerle.restclient.BearerAuthorization
+import email.haemmerle.restclient.JsonHttpClient
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.assertj.core.api.Assertions.assertThat

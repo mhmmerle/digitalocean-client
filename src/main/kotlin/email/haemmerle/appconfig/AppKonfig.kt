@@ -3,7 +3,7 @@ package email.haemmerle.appconfig
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 
-class AppConfig {
+class AppKonfig {
     val sources = mutableListOf<AppConfigSource>()
 
     inline fun <reified T> get(): T {
@@ -41,22 +41,22 @@ class AppConfig {
         parametersWithValues.put(param, this.get(param.type.classifier as KClass<*>, newPrefix))
     }
 
-    fun withJsonFile(filename: String): AppConfig {
+    fun withJsonFile(filename: String): AppKonfig {
         sources.add(AppConfigJsonFileSource(filename))
         return this
     }
 
-    fun withSource(testConfigSource: AppConfigSource): AppConfig {
+    fun withSource(testConfigSource: AppConfigSource): AppKonfig {
         sources.add(testConfigSource)
         return this
     }
 
-    fun withEnvironment(): AppConfig {
+    fun withEnvironment(): AppKonfig {
         sources.add(AppConfigEnvironmentVariableSource())
         return this
     }
 
-    fun withSystemProperties(): AppConfig {
+    fun withSystemProperties(): AppKonfig {
         sources.add(AppConfigSystemPropertySource())
         return this
     }

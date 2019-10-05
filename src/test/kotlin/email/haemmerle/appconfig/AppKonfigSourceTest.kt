@@ -8,7 +8,7 @@ import java.io.File
 import java.util.*
 import kotlin.text.Charsets.UTF_8
 
-class AppConfigSourceTest {
+class AppKonfigSourceTest {
 
     @Test
     fun shouldReadPropertyFromSystemProperty() {
@@ -50,7 +50,7 @@ class AppConfigSourceTest {
     }
 }
 
-class AppConfigFileSourceTest {
+class AppKonfigFileSourceTest {
     var testfile : File? = null
 
     @BeforeEach

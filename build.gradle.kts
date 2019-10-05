@@ -1,30 +1,20 @@
-buildscript {
-    val junitPlatformVersion: String by project
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath("org.junit.platform:junit-platform-gradle-plugin:$junitPlatformVersion")
-    }
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
-}
-
 plugins {
     kotlin("jvm") version "1.3.11"
     application
+    id("email.haemmerle.baseplugin").version("0.0.5")
 }
 
-pluginManager.apply("org.junit.platform.gradle.plugin")
-
 group = "email.haemmerle.digitalocean.client"
+description = "RESTful HTTP Client Library"
+
+buildScan {
+    termsOfServiceUrl = "https://gradle.com/terms-of-service"
+    termsOfServiceAgree = "yes"
+}
+
+`email-haemmerle-base` {
+    username = "mhmmerle"
+}
 
 application {
     mainClassName = "email.haemmerle.digitalocean.client.MainKt"
@@ -38,13 +28,13 @@ dependencies {
     implementation("com.github.ajalt:clikt:1.5.0")
     implementation( "org.jetbrains.kotlin:kotlin-reflect:1.3.40")
     implementation("email.haemmerle.restclient:lib-rest-client:0.0.1")
+    implementation("com.github.ajalt:clikt:2.2.0")
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.0.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.0.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.5.2")
     testImplementation("org.assertj:assertj-core:3.11.0")
     testImplementation("io.mockk:mockk:1.9")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.2.0")
 
-    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.0")
-
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.5.2")
 }
