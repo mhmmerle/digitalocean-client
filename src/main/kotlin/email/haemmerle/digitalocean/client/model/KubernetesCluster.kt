@@ -10,14 +10,19 @@ open class Links(val pages : Pages)
 class Pages(val first: String, val prev: String, val next: String, val last: String)
 object NoLinks : Links(Pages("", "", "", ""))
 class KubernetesClustersMeta(val total: Int)
-class KubernetesCluster(val id: String, val name: String, val region: String, val version: String,
-                        val cluster_subnet: String, val service_subnet: String, val ipv4: String, val endpoint: String,
-                        val tags: List<String>, val node_pools: List<NodePool>,
-                        val maintenance_policy: MaintenancePolicy, val auto_upgrade: Boolean, val status: Status)
+class KubernetesCluster(val id: String = "", val name: String, val region: String, val version: String,
+                        val cluster_subnet: String = "", val service_subnet: String = "",
+                        val ipv4: String = "", val endpoint: String = "",
+                        val tags: List<String>, val node_pools: List<NodePool>? = null,
+                        val maintenance_policy: MaintenancePolicy? = null,
+                        val auto_upgrade: Boolean = false, val status: Status? = null,
+                        val meta: KubernetesClustersMeta? = null, val links: Links = NoLinks)
+
+class KubernetesClusterResponse(val kubernetes_cluster: KubernetesCluster)
 
 class MaintenancePolicy (val start_time: String, val duration: String, val day: String)
-class NodePool(val id: String, val name: String, val size: String, val count: Int,
-               val tags: List<String>, val nodes: List<Node>)
+class NodePool(val id: String = "", val name: String, val size: String, val count: Int,
+               val tags: List<String>, val nodes: List<Node> = listOf())
 
 class Node(val id: String, val name: String, val status: Status,
            val created_at : String, val updated_at: String)

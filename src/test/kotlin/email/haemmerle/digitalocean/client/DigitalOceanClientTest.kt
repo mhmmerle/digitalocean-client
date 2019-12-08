@@ -1,14 +1,18 @@
 package email.haemmerle.digitalocean.client
 
+import com.beust.klaxon.Klaxon
+import email.haemmerle.digitalocean.client.model.KubernetesCluster
+import email.haemmerle.digitalocean.client.model.KubernetesClusterResponse
+import email.haemmerle.digitalocean.client.model.NodePool
 import email.haemmerle.restclient.BearerAuthorization
 import email.haemmerle.restclient.JsonHttpClient
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class DigitalOceanClientTest {
-
 
     @Test
     fun canGetOptions() {
@@ -67,7 +71,9 @@ internal class DigitalOceanClientTest {
     fun canListClusters() {
         // prepare
         val jsonClientMock = mockk<JsonHttpClient>()
-        every { jsonClientMock.performJsonGetRequest("/v2/kubernetes/clusters") } returns """
+        every {
+            jsonClientMock.performJsonGetRequest("/v2/kubernetes/clusters")
+        } returns """
             {
               "kubernetes_clusters": [
                 {
@@ -188,7 +194,7 @@ internal class DigitalOceanClientTest {
 
         // then
         assertThat(result.size).isEqualTo(1)
-        assertThat(result[0].node_pools.size).isEqualTo(2)
+        assertThat(result[0].node_pools!!.size).isEqualTo(2)
         assertThat(result[0].id).isEqualTo("bd5f5959-5e1e-4205-a714-a914373942af")
     }
 
@@ -196,37 +202,78 @@ internal class DigitalOceanClientTest {
     fun canCreateKubernetesCluster() {
         // prepare
         val jsonClientMock = mockk<JsonHttpClient>()
-        val sut = DigitalOceanClient(jsonClientMock)
-        val request = """{
-          "name": "prod-cluster-01",
-          "region": "nyc1",
-          "version": "1.14.1-do.4",
-          "tags": [
-            "production",
-            "web-team"
-          ],
-          "node_pools": [
-            {
-              "size": "s-1vcpu-2gb",
-              "count": 3,
-              "name": "frontend-pool",
-              "tags": [
-                "frontend"
-              ]
+        every {
+            jsonClientMock.performJsonPostRequest<KubernetesClusterResponse>("/v2/kubernetes/cluster", any())
+        } returns Klaxon().parse("""
+            "kubernetes_cluster": {
+            "id": "fbd7dba7-c452-4b34-ba77-81bca226c273",
+            "name": "test-cluster-01",
+            "region": "fra1",
+            "version": "1.15.3-do.3",
+            "cluster_subnet": "10.244.0.0/16",
+            "service_subnet": "10.245.0.0/16",
+            "vpc_uuid": "",
+            "ipv4": "",
+            "endpoint": "",
+            "tags": [
+              "test",
+              "k8s",
+              "k8s:fbd7dba7-c452-4b34-ba77-81bca226c273"
+            ],
+            "node_pools": [
+              {
+                "id": "262b7fbe-4c98-48c3-9c6f-c839eaa28795",
+                "name": "test",
+                "size": "s-1vcpu-2gb",
+                "count": 3,
+                "tags": [
+                  "test",
+                  "k8s",
+                  "k8s:fbd7dba7-c452-4b34-ba77-81bca226c273",
+                  "k8s:worker"
+                ],
+                "auto_scale": false,
+                "min_nodes": 0,
+                "max_nodes": 0,
+                "nodes": [
+                  {
+                    "id": "5c26b3c5-09d3-4f19-a498-aae74c3fd095",
+                    "name": "",
+                    "status": {
+                      "state": "provisioning"
+                    },
+                    "droplet_id": "",
+                    "created_at": "2019-10-05T15:42:16Z",
+                    "updated_at": "2019-10-05T15:42:16Z"
+                  }
+                ]
+              }
+            ],
+            "maintenance_policy": {
+              "start_time": "13:00",
+              "duration": "4h0m0s",
+              "day": "any"
             },
-            {
-              "size": "c-4",
-              "count": 2,
-              "name": "backend-pool"
-            }
-          ]
-        }"""
+            "auto_upgrade": false,
+            "status": {
+              "state": "provisioning",
+              "message": "provisioning"
+            },
+            "created_at": "2019-10-05T15:42:16Z",
+            "updated_at": "2019-10-05T15:42:16Z"
+          }
+        }
+        """)
+        val sut = DigitalOceanClient(jsonClientMock)
+        val desiredState = KubernetesCluster(
+                name = "test-cluster-01", region = "fra1", version = "1.15.3-do.3", tags = listOf("a-cluster-tag"),
+                node_pools = listOf( NodePool(size = "s-1vcpu-2gb", count = 1, name = "test-pool", tags = listOf("a-pool-tag"))))
 
         // when
-
+        sut.createKubernetesCluster(desiredState)
 
         // then
-
+        verify { jsonClientMock.performJsonPostRequest("/v2/kubernetes/clusters", Klaxon().toJsonString(desiredState)) }
     }
 
     @Test
@@ -235,7 +282,24 @@ internal class DigitalOceanClientTest {
         val sut = JsonHttpClient(appConfig.server.url, BearerAuthorization(appConfig.server.token))
 
         // when
-        val response = sut.performJsonPostRequest("/v2/kubernetes/clusters")
+        val response = sut.performJsonPostRequest("/v2/kubernetes/clusters", """{
+          "name": "test-cluster-01",
+          "region": "fra1",
+          "version": "1.15.3-do.3",
+          "tags": [
+            "test"
+          ],
+          "node_pools": [
+            {
+              "size": "s-1vcpu-2gb",
+              "count": 3,
+              "name": "test",
+              "tags": [
+                "test"
+              ]
+            }
+          ]
+        }""")
 
         // then
         println(response.toString(Charsets.UTF_8))

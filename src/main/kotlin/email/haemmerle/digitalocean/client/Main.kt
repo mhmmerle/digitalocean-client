@@ -23,7 +23,13 @@ class Kubernetes : CliktCommand(help = "Manage Kubernetes clusters in Digital Oc
 
 class Options : CliktCommand(help = "Show available options for Kubernetes clusters") {
     override fun run() {
-        DigitalOceanClient(appConfig.server.url, appConfig.server.token).getKubernetesOptions()
+        val options = DigitalOceanClient(appConfig.server.url, appConfig.server.token).getKubernetesOptions()
+        println("REGIONS")
+        options.regions.forEach { println("${it.slug}: ${it.name}") }
+        println("NODE SIZES")
+        options.sizes.forEach { println("${it.slug}: ${it.name}")  }
+        println("KUBERNETES VERSIONS")
+        options.versions.forEach { println("${it.slug}: ${it.kubernetes_version}")  }
     }
 }
 

@@ -1,9 +1,7 @@
 package email.haemmerle.digitalocean.client
 
-import email.haemmerle.digitalocean.client.model.KubernetesCluster
-import email.haemmerle.digitalocean.client.model.KubernetesClustersResponse
-import email.haemmerle.digitalocean.client.model.KubernetesOptions
-import email.haemmerle.digitalocean.client.model.KubernetesOptionsResponse
+import com.beust.klaxon.Klaxon
+import email.haemmerle.digitalocean.client.model.*
 import email.haemmerle.restclient.BearerAuthorization
 import email.haemmerle.restclient.JsonHttpClient
 
@@ -28,6 +26,14 @@ class DigitalOceanClient {
         return jsonClient
                 .performJsonGetRequest<KubernetesClustersResponse>("/v2/kubernetes/clusters")!!
                 .kubernetes_clusters
+    }
+
+    fun createKubernetesCluster(cluster: KubernetesCluster) : KubernetesCluster {
+        return jsonClient
+                .performJsonPostRequest<KubernetesClusterResponse>(
+                        "/v2/kubernetes/clusters",
+                        Klaxon().toJsonString(cluster))!!
+                .kubernetes_cluster
     }
 
 }
